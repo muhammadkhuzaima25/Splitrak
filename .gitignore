@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+
+# build output
+client/dist/
+server/dist/
+
+# environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+npm-debug.log*
+
+# coverage
+coverage/
+
+# misc
+*.tgz
+*.tmp
