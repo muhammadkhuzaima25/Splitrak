@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Splitrak — Vendor Management & Quotation System" src="./client/public/logo.png" width="100" style="border-radius: 16px;">
+  <img alt="Splitrak — Vendor Management & Quotation System" src="./client/public/splitrak.svg" width="100" style="border-radius: 16px;">
 </p>
 
 <h1 align="center">Split<span style="color:#00C27A">rak</span></h1>
