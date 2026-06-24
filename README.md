@@ -30,9 +30,9 @@
 
 ---
 
-<!-- SEO KEYWORDS — natural context, not spam -->
+<!-- SEO KEYWORDS -->
 <!--
-splitrak, vendor management system, quotation management system, MERN stack project, full stack web application, procurement software, supplier comparison tool, smart order splitting, quotation tracking dashboard, vendor performance badges, PDF procurement report, React dashboard with charts, internship project MERN, full stack developer Pakistan, Teyzix Core internship, vendor quotation comparison, cost optimization tool, B2B procurement platform, MongoDB Express React Node project, recharts dashboard, jsPDF export, dark light mode React app
+splitrak, vendor management system, quotation management system, MERN stack project, full stack web application, procurement software, supplier comparison tool, smart order splitting, quotation tracking dashboard, vendor star rating system, PDF procurement report, React dashboard with charts, internship project MERN, full stack developer Pakistan, Teyzix Core internship, vendor quotation comparison, cost optimization tool, B2B procurement platform, MongoDB Express React Node project, recharts dashboard, jsPDF export, dark light mode React app
 -->
 
 ---
@@ -49,13 +49,14 @@ The standout feature is the **Smart Split Optimizer** — an algorithm that anal
 
 ## ❗ Problem Statement
 
-Most small and mid-sized businesses still manage their vendor communications through email threads and Excel files. As the number of vendors and quotation requests grows, three problems become unavoidable:
+Most businesses still manage vendor communications through email threads and Excel files. As supplier count and quotation volume grows, three problems become unavoidable:
 
 - **No centralized vendor database** — supplier contacts and history are scattered across inboxes
-- **Manual cost comparison** — comparing vendor quotes item by item takes hours of spreadsheet work
-- **Zero visibility into procurement patterns** — no way to track which vendors consistently deliver value
+- **Manual cost comparison** — comparing vendor quotes item by item wastes hours of work. Worse, businesses end up awarding the entire order to one vendor even when different vendors offer better prices on different items — overpaying unnecessarily
+- **Zero visibility into procurement patterns** — no way to track which vendors consistently deliver value over time
 
-Splitrak solves all three. Vendor data lives in one place, quotation comparison happens automatically, and dashboard charts surface procurement trends over time.
+**How Splitrak solves this:**
+The Smart Split Optimizer directly attacks the second problem — the one that costs businesses the most money. Instead of picking one vendor for the whole order, it runs a per-item comparison across all vendor responses and builds an optimized split order automatically. The result is displayed as a clear breakdown with exact savings shown per item and in total, and can be exported as a professional PDF procurement report.
 
 ---
 
@@ -64,10 +65,10 @@ Splitrak solves all three. Vendor data lives in one place, quotation comparison 
 | Feature | Description |
 |---|---|
 | 🏢 **Vendor Directory** | Add, edit, search, and manage all supplier information in one place |
-| 📋 **Quotation Requests** | Create structured requests with dynamic item rows and assign them to vendors |
+| 📋 **Quotation Requests** | Create structured requests with dynamic item rows |
 | 📥 **Vendor Responses** | Vendors submit per-item pricing; responses tracked with status management |
-| ⚡ **Smart Split Optimizer** | Algorithm finds cheapest vendor per item and calculates total savings vs single-vendor order |
-| 🏅 **Vendor Performance Badges** | Auto-assigned badges (Top Performer, Cost Saver, Fast Responder, Needs Review) based on approval history |
+| ⚡ **Smart Split Optimizer** | Finds cheapest vendor per item and calculates exact savings vs single-vendor order |
+| ⭐ **Vendor Star Ratings** | Auto-calculated ratings from quotation history displayed as `Vendor Name  ★ 4.8` |
 | 📊 **Interactive Charts** | Donut chart for quotation status, bar chart for top vendors, line chart for monthly activity |
 | 📄 **PDF Procurement Report** | One-click export of smart split results with vendor details, item breakdown, and savings summary |
 | 🌗 **Dark / Light Mode** | Fully themed toggle with persistent preference saved to localStorage |
@@ -113,6 +114,13 @@ Output:
 ```
 
 This means a business ordering 5 different items doesn't have to pay one vendor's price for everything — they get the best deal on every single line item.
+
+---
+
+## ⭐ Vendor Rating System
+
+Vendors are automatically rated based on their quotation history — no manual input needed.
+Ratings appear as `Vendor Name  ★ 4.8` across the vendor table, dashboard, and PDF reports.
 
 ---
 
@@ -171,16 +179,15 @@ splitrak/
 │       │   ├── Sidebar.jsx        # Fixed navigation sidebar
 │       │   ├── Navbar.jsx         # Top bar with theme toggle + dropdown
 │       │   ├── Footer.jsx         # Footer with social links
-│       │   ├── VendorBadge.jsx    # Performance badge component
 │       │   └── ProtectedRoute.jsx # Auth guard
 │       ├── context/
 │       │   ├── AuthContext.jsx    # Auth state management
 │       │   └── ThemeContext.jsx   # Dark/light mode state
 │       └── pages/
-│           ├── Login.jsx          # Split-panel auth page
-│           ├── Register.jsx       # Split-panel register page
-│           ├── Dashboard.jsx      # Stats + charts + vendor highlights
-│           ├── Vendors.jsx        # Vendor CRUD with badge column
+│           ├── Login.jsx              # Split-panel auth page
+│           ├── Register.jsx           # Split-panel register page
+│           ├── Dashboard.jsx          # Stats + charts + vendor highlights
+│           ├── Vendors.jsx            # Vendor CRUD with star ratings
 │           ├── QuotationRequests.jsx  # Request management
 │           ├── VendorResponse.jsx     # Response submission
 │           └── SmartComparison.jsx    # Split optimizer + PDF export
@@ -190,9 +197,9 @@ splitrak/
     │   └── db.js
     ├── controllers/
     │   ├── authController.js
-    │   ├── vendorController.js    # Includes badge calculation logic
+    │   ├── vendorController.js        # Includes rating calculation logic
     │   ├── quotationController.js
-    │   └── dashboardController.js # Stats + chart data endpoints
+    │   └── dashboardController.js     # Stats + chart data endpoints
     ├── middleware/
     │   └── authMiddleware.js
     ├── models/
@@ -223,11 +230,10 @@ splitrak/
 ### Vendors — `/api/vendors`
 | Method | Path | Description | Access |
 |---|---|---|---|
-| GET | / | Get all vendors with badges | Private |
+| GET | / | Get all vendors with ratings | Private |
 | POST | / | Add new vendor | Private |
 | PUT | /:id | Update vendor | Private |
 | DELETE | /:id | Delete vendor | Private |
-| GET | /:id/badge | Get vendor badge data | Private |
 
 ### Quotation Requests — `/api/quotation-requests`
 | Method | Path | Description | Access |
@@ -255,21 +261,6 @@ splitrak/
 
 ---
 
-## 🏅 Vendor Badge System
-
-Badges are calculated automatically from each vendor's quotation history — no manual input required.
-
-| Badge | Criteria |
-|---|---|
-| 🥇 Top Performer | Approval rate ≥ 80% |
-| ⚡ Fast Responder | 5+ responses submitted with 2+ approvals |
-| 💰 Cost Saver | At least 1 approval, consistent participation |
-| ⚠️ Needs Review | Rejection rate > 70% with 3+ responses |
-
-Badges appear in the vendor table, on dashboard highlights, and inside exported PDF reports.
-
----
-
 ## 📄 PDF Procurement Report
 
 The Smart Comparison page includes a one-click PDF export that generates a professional procurement document containing:
@@ -277,7 +268,7 @@ The Smart Comparison page includes a one-click PDF export that generates a profe
 - Splitrak branding header with logo
 - Quotation request title and description
 - Smart Split results table — item, best vendor, company, phone, unit price, total, savings
-- Full vendor directory with contact details and badges
+- Full vendor directory with contact details and star ratings
 - Cost summary box — single vendor total vs optimized total vs **YOU SAVE** amount
 - Confidential footer with generation date
 
@@ -298,7 +289,7 @@ File is saved as: `splitrak-[request-title]-[date].pdf`
 
 ## 👤 Author
 
-**Muhammad Khuzaima**
+**Muhammad Khuzaima**  
 Graphic Designer · Logo & Brand Identity Expert · UI/UX Designer · MERN Stack Developer
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=flat&logo=linkedin&labelColor=080E0D)](https://www.linkedin.com/in/muhammad-khuzaima-991a08313)
@@ -308,7 +299,7 @@ Graphic Designer · Logo & Brand Identity Expert · UI/UX Designer · MERN Stack
 
 ## 📄 License
 
-**All Rights Reserved.** Copyright © 2026 Muhammad Khuzaima.
+**All Rights Reserved.** Copyright © 2026 Muhammad Khuzaima.  
 This project is for **viewing and evaluation purposes only.**
 
 ---
